@@ -171,13 +171,6 @@ RSpec.describe RSpec::EnqueuedSidekiqJob do
   end
 
   context 'with arguments' do
-    it 'fails with kwargs' do
-      expect {
-        expect { worker.perform_async }
-          .to enqueue_sidekiq_job(worker).with(42, name: 'David')
-      }.to raise_error(/keyword arguments serialization is not supported by Sidekiq/)
-    end
-
     it 'passes with provided arguments' do
       expect { worker.perform_async(42, 'David') }
         .to enqueue_sidekiq_job(worker).with(42, 'David')

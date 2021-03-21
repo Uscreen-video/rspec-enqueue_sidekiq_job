@@ -32,9 +32,7 @@ module RSpec
         @worker_class = worker_class
       end
 
-      def with(*expected_arguments, **kwargs)
-        raise 'keyword arguments serialization is not supported by Sidekiq' unless kwargs.empty?
-
+      def with(*expected_arguments)
         @expected_arguments = expected_arguments
         self
       end
