@@ -22,6 +22,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop'
   s.add_development_dependency 'rubocop-rspec'
 
-  s.files = %w[LICENSE README.md rspec-enqueue_sidekiq_job.gemspec] + Dir['**/*.rb']
+  s.files = %w[LICENSE README.md rspec-enqueue_sidekiq_job.gemspec] + Dir['lib/**/*.rb']
   s.require_paths = ['lib']
 end
