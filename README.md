@@ -5,7 +5,7 @@
 ```ruby
 # Gemfile
 group :test do
-  gem 'rspec-enqueue_sidekiq_job', require: 'rspec/enqueue_sidekiq_job'
+  gem 'rspec-enqueue_sidekiq_job'
 end
 ```
 
