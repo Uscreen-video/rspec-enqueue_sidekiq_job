@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe RSpec::EnqueuedSidekiqJob do
+RSpec.describe RSpec::EnqueueSidekiqJob do
   let(:worker) do
     Class.new do
       include ::Sidekiq::Worker

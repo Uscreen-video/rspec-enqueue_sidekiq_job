@@ -2,7 +2,7 @@ require 'sidekiq/testing'
 
 module RSpec
   # An includable module that provides `enqueue_sidekiq_job` matcher
-  module EnqueuedSidekiqJob
+  module EnqueueSidekiqJob
     # Checks if a certain job was enqueued in a block.
     #
     # expect { AwesomeWorker.perform_async }
@@ -125,5 +125,5 @@ module RSpec
 end
 
 RSpec.configure do |config|
-  config.include RSpec::EnqueuedSidekiqJob
+  config.include RSpec::EnqueueSidekiqJob
 end
