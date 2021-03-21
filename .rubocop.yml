@@ -1,0 +1,28 @@
+# See https://docs.rubocop.org/rubocop/configuration
+
+require:
+  - rubocop-rspec
+
+AllCops:
+  NewCops: disable
+  TargetRubyVersion: 2.4
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*.rb
+
+Metrics/AbcSize:
+  Max: 18
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/BlockDelimiters:
+  Exclude:
+    - spec/**/*.rb
+
+RSpec/ExampleLength:
+  Max: 6
+
+RSpec/MultipleExpectations:
+  Enabled: false
