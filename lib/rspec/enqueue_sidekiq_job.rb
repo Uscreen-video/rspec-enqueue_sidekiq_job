@@ -1,4 +1,5 @@
 require 'sidekiq/testing'
+require 'active_support/core_ext/hash/indifferent_access'
 
 module RSpec
   # An includable module that provides `enqueue_sidekiq_job` matcher
@@ -33,6 +34,10 @@ module RSpec
       end
 
       def with(*expected_arguments)
+        if expected_arguments.last.is_a?(Hash)
+          options = expected_arguments.pop
+          expected_arguments.push(options.with_indifferent_access)
+        end
         @expected_arguments = expected_arguments
         self
       end

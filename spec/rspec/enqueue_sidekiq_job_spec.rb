@@ -193,4 +193,28 @@ RSpec.describe RSpec::EnqueueSidekiqJob do
       }.to raise_error(/expected to enqueue.+arguments:/m)
     end
   end
+
+  context 'with hash arguments' do
+    it 'passes with symbol keys' do
+      expect { worker.perform_async(42, name: 'David') }
+        .to enqueue_sidekiq_job(worker).with(42, name: 'David')
+    end
+
+    it 'passes with string keys' do
+      expect { worker.perform_async(42, 'name' => 'David') }
+        .to enqueue_sidekiq_job(worker).with(42, 'name' => 'David')
+    end
+
+    context 'when matcher and perform tpyes are intermixed' do
+      it 'passes with symbol keys' do
+        expect { worker.perform_async(42, name: 'David') }
+          .to enqueue_sidekiq_job(worker).with(42, 'name' => 'David')
+      end
+
+      it 'passes with string keys' do
+        expect { worker.perform_async(42, 'name' => 'David') }
+          .to enqueue_sidekiq_job(worker).with(42, name: 'David')
+      end
+    end
+  end
 end

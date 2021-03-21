@@ -13,11 +13,11 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.4.0'
 
+  s.add_dependency 'activesupport', '~> 5'
   s.add_dependency 'rspec-core', '~> 3'
   s.add_dependency 'rspec-expectations', '~> 3'
   s.add_dependency 'sidekiq', '~> 3'
 
-  s.add_development_dependency 'activesupport'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rubocop'
   s.add_development_dependency 'rubocop-rspec'
