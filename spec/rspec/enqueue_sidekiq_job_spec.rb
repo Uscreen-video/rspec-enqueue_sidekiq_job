@@ -74,31 +74,68 @@ RSpec.describe RSpec::EnqueueSidekiqJob do
     expect { worker.perform_async }.to enqueue_sidekiq_job(worker)
   end
 
-  it 'fails when too many jobs enqueued' do
-    expect {
+  describe 'count constraints' do
+    it 'fails when too many jobs enqueued' do
+      expect {
+        expect {
+          worker.perform_async
+          worker.perform_async
+        }.to enqueue_sidekiq_job(worker)
+      }.to raise_error(/expected to enqueue/)
+    end
+
+    it 'fails when negated and several jobs enqueued' do
+      expect {
+        expect {
+          worker.perform_async
+          worker.perform_async
+        }.not_to enqueue_sidekiq_job(worker)
+      }.to raise_error(/expected not to enqueue/)
+    end
+
+    it 'passes with multiple different jobs' do
+      expect {
+        another_worker.perform_async
+        worker.perform_async
+      }
+        .to enqueue_sidekiq_job(worker)
+        .and enqueue_sidekiq_job(another_worker)
+    end
+
+    it 'passes when explicitly expected to be enqueued twice' do
       expect {
         worker.perform_async
         worker.perform_async
-      }.to enqueue_sidekiq_job(worker)
-    }.to raise_error(/expected to enqueue/)
-  end
+      }.to enqueue_sidekiq_job(worker).twice
+    end
 
-  it 'fails when negated and several jobs enqueued' do
-    expect {
+    it 'fails when expected to be enqueued twice, but enqueued once' do
       expect {
-        worker.perform_async
-        worker.perform_async
-      }.not_to enqueue_sidekiq_job(worker)
-    }.to raise_error(/expected not to enqueue/)
-  end
+        expect {
+          worker.perform_async
+        }.to enqueue_sidekiq_job(worker).twice
+      }.to raise_error(/expected to enqueue/)
+    end
 
-  it 'passes with multiple jobs' do
-    expect {
-      another_worker.perform_async
-      worker.perform_async
-    }
-      .to enqueue_sidekiq_job(worker)
-      .and enqueue_sidekiq_job(another_worker)
+    it 'passes when expected to be enqueued twice, but enqueued more than twice' do
+      expect {
+        expect {
+          3.times { worker.perform_async }
+        }.to enqueue_sidekiq_job(worker).twice
+      }.to raise_error(/expected to enqueue/)
+    end
+
+    it 'fails on attempt to use negation with explicit counts' do
+      expect {
+        expect {}.not_to enqueue_sidekiq_job(worker).twice
+      }.to raise_error(/counts are not supported with negation/)
+    end
+
+    it 'provides `exactly` and `times`' do
+      expect {
+        2.times { worker.perform_async }
+      }.to enqueue_sidekiq_job(worker).exactly(2).times
+    end
   end
 
   context 'when enqueued with perform_at' do
@@ -138,6 +175,12 @@ RSpec.describe RSpec::EnqueueSidekiqJob do
           .to enqueue_sidekiq_job(worker).at(1.minute.from_now)
       }.to raise_error(/expected to enqueue.+at:/m)
     end
+
+    it 'fails when both in and at are specified' do
+      expect {
+        enqueue_sidekiq_job(worker).at(1.minute.from_now).in(1.minute)
+      }.to raise_error(/both `at` and `in` is not supported/)
+    end
   end
 
   context 'when enqueued with perform_in' do
@@ -160,6 +203,12 @@ RSpec.describe RSpec::EnqueueSidekiqJob do
         expect { worker.perform_async }
           .to enqueue_sidekiq_job(worker).in(1.minute)
       }.to raise_error(/expected to enqueue.+in:/m)
+    end
+
+    it 'fails when both in and at are specified' do
+      expect {
+        enqueue_sidekiq_job(worker).in(1.minute).at(1.minute.from_now)
+      }.to raise_error(/both `at` and `in` is not supported/)
     end
   end
 

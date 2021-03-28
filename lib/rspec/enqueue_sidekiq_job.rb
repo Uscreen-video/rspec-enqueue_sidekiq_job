@@ -31,6 +31,7 @@ module RSpec
 
       def initialize(worker_class)
         @worker_class = worker_class
+        @expected_count = nil
       end
 
       def with(*expected_arguments)
@@ -56,11 +57,26 @@ module RSpec
         self
       end
 
+      def times
+        self
+      end
+
+      def exactly(times)
+        @expected_count = times
+        self
+      end
+
+      def twice
+        exactly(2).times
+      end
+
       def matches?(block)
-        filter(enqueued_in_block(block)).one?
+        filter(enqueued_in_block(block)).count == (expected_count || 1)
       end
 
       def does_not_match?(block)
+        raise 'counts are not supported with negation' if expected_count
+
         filter(enqueued_in_block(block)).none?
       end
 
@@ -69,6 +85,7 @@ module RSpec
         message << "  arguments: #{expected_arguments}" if expected_arguments
         message << "  in: #{expected_in.inspect}" if expected_in
         message << "  at: #{expected_at}" if expected_at
+        message << "  exactly #{expected_count} times" if expected_count
         message.join("\n")
       end
 
@@ -77,6 +94,7 @@ module RSpec
         message << "  arguments: #{expected_arguments}" if expected_arguments
         message << "  in: #{expected_in.inspect}" if expected_in
         message << "  at: #{expected_at}" if expected_at
+        message << "  exactly #{expected_count} times" if expected_count
         message.join("\n")
       end
 
@@ -122,7 +140,7 @@ module RSpec
         expected_in.from_now.to_i == actual_time.to_i
       end
 
-      attr_reader :worker_class, :expected_arguments, :expected_at, :expected_in
+      attr_reader :worker_class, :expected_arguments, :expected_at, :expected_in, :expected_count
     end
 
     private_constant :Matcher
