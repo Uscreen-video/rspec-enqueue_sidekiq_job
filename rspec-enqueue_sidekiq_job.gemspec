@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.author      = 'Phil Pirozhkov'
   s.email       = 'hello@fili.pp.ru'
-  s.homepage    = 'http://github.com/pirj/rspec-enqueue_sidekiq_job'
+  s.homepage    = 'http://github.com/Uscreen-video/rspec-enqueue_sidekiq_job'
   s.summary     = 'RSpec matcher to check enqueueing of Sidekiq jobs'
   s.description = s.summary
   s.license     = 'MIT'
