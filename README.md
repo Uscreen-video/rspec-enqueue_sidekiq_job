@@ -38,3 +38,19 @@ interval = 5.minutes
 expect { AwesomeWorker.perform_in(interval) }
   .to enqueue_sidekiq_job(AwesomeWorker).in(5.minutes)
 ```
+
+### Specifying counts
+
+`enqueue_sidekiq_job` implies "exactly once" by default. But you can adjust that.
+
+```ruby
+expect {
+  2.times { AwesomeWorker.perform_async }
+}.to enqueue_sidekiq_job(AwesomeWorker).twice
+```
+
+```ruby
+expect {
+  3.times { AwesomeWorker.perform_async }
+}.to enqueue_sidekiq_job(AwesomeWorker).exactly(3).times
+```
